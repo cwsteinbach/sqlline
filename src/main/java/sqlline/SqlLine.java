@@ -1733,6 +1733,13 @@ public class SqlLine {
           scannedDrivers.add(driver);
         }
       }
+      for (Enumeration<Driver> e = DriverManager.getDrivers(); e.hasMoreElements(); ) {
+        Driver driver = e.nextElement();
+        if (driverClasses.isEmpty()
+                || driverClasses.contains(driver.getClass().getCanonicalName())) {
+          scannedDrivers.add(driver);
+        }
+      }
     }
     long end = System.currentTimeMillis();
     info("scan complete in " + (end - start) + "ms");

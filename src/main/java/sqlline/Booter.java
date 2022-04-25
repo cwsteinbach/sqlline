@@ -7,6 +7,7 @@ import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RemoteRepository;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,14 +46,8 @@ public class Booter
     {
         DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
 
-        LocalRepository localRepo = new LocalRepository( "target/local-repo" );
+        LocalRepository localRepo = new LocalRepository( System.getProperty("user.home") + File.separator + ".m2/repository");
         session.setLocalRepositoryManager( system.newLocalRepositoryManager( session, localRepo ) );
-
-        //session.setTransferListener( new ConsoleTransferListener() );
-        //session.setRepositoryListener( new ConsoleRepositoryListener() );
-
-        // uncomment to generate dirty trees
-        // session.setDependencyGraphTransformer( null );
 
         return session;
     }

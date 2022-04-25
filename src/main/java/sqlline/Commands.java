@@ -15,6 +15,8 @@ import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -636,18 +638,24 @@ public class Commands {
     artifact = new DefaultArtifact("org.postgresql:postgresql:42.2.5");
 
     artifactRequest = new ArtifactRequest();
-    artifactRequest.setArtifact( artifact );
+    artifactRequest.setArtifact(artifact);
     artifactRequest.setRepositories(Booter.newRepositories( system, session ));
 
     try {
       artifactResult = system.resolveArtifact(session, artifactRequest);
       artifact = artifactResult.getArtifact();
       System.out.println(artifact + " resolved to  " + artifact.getFile());
+
+      URL u = new URL("jar:file:" + artifact.getFile() + "!/");
+      String classname = "org.postgresql.Driver";
+      URLClassLoader ucl = new URLClassLoader(new URL[] { u });
+
+      Driver d = (Driver)Class.forName(classname, true, ucl).newInstance();
+      DriverManager.registerDriver(new DriverShim(d));
     } catch (Exception e) {
-      System.out.println("Caught exception");
+      callback.setToFailure();
+      sqlLine.error(e);
     }
-
-
     callback.setToSuccess();
   }
 

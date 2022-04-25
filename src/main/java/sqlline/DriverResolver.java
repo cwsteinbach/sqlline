@@ -15,7 +15,7 @@ import java.util.List;
 public class DriverResolver
 {
 
-    public File resolveDriverArtifact(String artifactId) {
+    public static File resolveDriverArtifact(String artifactId) {
         return null;
     }
 

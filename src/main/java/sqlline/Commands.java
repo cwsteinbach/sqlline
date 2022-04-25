@@ -24,6 +24,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResult;
 import org.jline.reader.History;
 import org.jline.reader.MaskingCallback;
 import org.jline.reader.Parser;
@@ -617,6 +623,30 @@ public class Commands {
   }
 
   public void driver(String line, DispatchCallback callback) {
+
+    RepositorySystem system = Booter.newRepositorySystem(Booter.selectFactory(null));
+
+    DefaultRepositorySystemSession session = Booter.newRepositorySystemSession( system );
+
+    Artifact artifact;
+    ArtifactRequest artifactRequest;
+    ArtifactResult artifactResult;
+
+    // artifact
+    artifact = new DefaultArtifact("org.postgresql:postgresql:42.2.5");
+
+    artifactRequest = new ArtifactRequest();
+    artifactRequest.setArtifact( artifact );
+    artifactRequest.setRepositories(Booter.newRepositories( system, session ));
+
+    try {
+      artifactResult = system.resolveArtifact(session, artifactRequest);
+      artifact = artifactResult.getArtifact();
+      System.out.println(artifact + " resolved to  " + artifact.getFile());
+    } catch (Exception e) {
+      System.out.println("Caught exception");
+    }
+
 
     callback.setToSuccess();
   }

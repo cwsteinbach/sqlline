@@ -616,6 +616,11 @@ public class Commands {
     callback.setToSuccess();
   }
 
+  public void driver(String line, DispatchCallback callback) {
+
+    callback.setToSuccess();
+  }
+
   public void scan(String line, DispatchCallback callback) {
     final Map<String, Driver> driverNames = new TreeMap<>();
 
